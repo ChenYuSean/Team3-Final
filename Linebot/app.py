@@ -43,10 +43,10 @@ app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
 # CHANNEL_ACCESS_TOKEN
-line_bot_api = LineBotApi('o6AOZBeg/lNXFGmH7ufXamlVZwSjrw1f2FItw3A3AR7OVpFtGx11pWNoY3Zsc3fFoxhGKg9j677Fhi0fJsiVPAMZhRTeauHlNyJLGslgnpsNmvKnM9QG9jXDUKs/Nee7AOCd11HrgqsGMgvgvsPRKgdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('CHANNEL_ACCESS_TOKEN')
 
 # CHANNEL_SECRET
-handler = WebhookHandler('61dcb509e02e5468f6c3eb08c3cb5e2d')
+handler = WebhookHandler('CHANNEL_SECRET')
 
 #USER STATE
 user_states={}
@@ -143,16 +143,6 @@ if 'llama' in model_name or isinstance(tokenizer, LlamaTokenizer):
 print("Loading adapters from checkpoint.")
 model = PeftModel.from_pretrained(model, join(checkpoint_dir, 'adapter_model'), is_trainable=True)
 
-# for name, module in model.named_modules():
-#         if isinstance(module, LoraLayer):
-#             if args.bf16:
-#                 module = module.to(torch.bfloat16)
-#         if 'norm' in name:
-#             module = module.to(torch.float32)
-#         if 'lm_head' in name or 'embed_tokens' in name:
-#             if hasattr(module, 'weight'):
-#                 if args.bf16 and module.weight.dtype == torch.float32:
-#                     module = module.to(torch.bfloat16)
 
 """
 ==== robot response =====
@@ -244,9 +234,6 @@ def handle_message(event):
         # scrap tile and description od video
         title, description=scrape_video_info(user_input)
 
-        # reply_text = f'你選擇了 {user_mode} mode 和 {user_mood} mood. 影片標題:[{title}]。影片敘述:[{description}]。 \n 生成評論中...'
-        # line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
-
         model_input=get_prompt(title,description,user_mode)
         try:
             answer = response(model_input)
@@ -273,18 +260,6 @@ def handle_message(event):
         # 如果是負面評論，進行相應處理
         user_states[user_id]['mode'] = 'negative'
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='你選擇了負面評論模式'))
-    # elif data == 'like':
-    #     user_states[user_id]['mood'] = 'like'
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='You selected mood like.'))
-    # elif data == 'sadness':
-    #     user_states[user_id]['mood'] = 'sadness'
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='You selected mood sadness.'))
-    # elif data == 'anger':
-    #     user_states[user_id]['mood'] = 'anger'
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='You selected mood anger.'))
-    # elif data == 'fear':
-    #     user_states[user_id]['mood'] = 'fear'
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='You selected mood fear.'))
     else:
         # 其他情況
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Unknown selection.'))
