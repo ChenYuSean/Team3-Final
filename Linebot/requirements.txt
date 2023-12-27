@@ -1,0 +1,16 @@
+line-bot-sdk
+flask
+gunicorn
+bitsandbytes==0.41.1
+text-generation==0.6.0
+transformers==4.34.1
+torch==2.1.0
+peft==0.6.0
+accelerate==0.21.0
+einops==0.6.1
+evaluate==0.4.0
+scikit-learn==1.2.2
+sentencepiece==0.1.99
+wandb==0.15.3
+pytube
+
